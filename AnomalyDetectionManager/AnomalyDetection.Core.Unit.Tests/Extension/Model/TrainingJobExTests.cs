@@ -15,51 +15,64 @@ namespace AnomalyDetection.Core.Unit.Tests.Extension.Model
         public void ToCronJob_FromTrainingJob_ShouldReturnValidCronJob()
         {
             //Given
-            var trainingJob = CreateTrainingJob();
+            var trainingJob = CreateRandomTrainingJob();
             const string image = "test/image";
             const string imagePullPolicy = "Always";
             const string restartPolicy = "Never";
+
             //When
             var cronJob = trainingJob.ToCronJob(image, imagePullPolicy, restartPolicy);
 
             //Then
             cronJob.Kind.Should().BeSameAs(V1CronJob.KubeKind);
             cronJob.ApiVersion.Should().BeSameAs($"{V1CronJob.KubeGroup}/{V1CronJob.KubeApiVersion}");
-            
+
             var containerList = cronJob.Spec.JobTemplate.Spec.Template.Spec.Containers;
             containerList.Should().HaveCount(1);
             containerList[0].Image.Should().BeSameAs(image);
             containerList[0].ImagePullPolicy.Should().BeSameAs(imagePullPolicy);
-            //Then
+            cronJob.Spec.JobTemplate.Spec.Template.Spec.RestartPolicy.Should().BeSameAs(restartPolicy);
         }
 
-        private TrainingJob CreateTrainingJob()
+        [Fact]
+        public void GetCronJobName_WithNonNullTrainingJob_ShouldReturnTheCorrectName()
+        {
+            //Given
+            var trainingJob = CreateRandomTrainingJob();
+            trainingJob.Metric.Name = "Metric1_Total_Seconds";
+            var expectedName = "trainingjob-metric1-total-seconds";
+
+            //When
+            var actualName = trainingJob.GetCronJobName();
+
+            //Then
+            actualName.Should().Be(expectedName);
+        }
+
+        [Fact]
+        public void GetCronJobName_WithNull_ShouldThrowNullReferenceException()
+        {
+            //Given
+            TrainingJob trainingJob1 = null;
+            TrainingJob trainingJob2 = CreateRandomTrainingJob();
+            trainingJob2.Metric = null;
+            TrainingJob trainingJob3 = CreateRandomTrainingJob();
+            trainingJob3.Metric.Name = null;
+
+            //When
+            Action action1 = () => trainingJob1.GetCronJobName();
+            Action action2 = () => trainingJob2.GetCronJobName();
+            Action action3 = () => trainingJob3.GetCronJobName();
+
+            //Then
+            action1.Should().Throw<NullReferenceException>();
+            action2.Should().Throw<NullReferenceException>();
+            action3.Should().Throw<NullReferenceException>();
+        }
+
+        private static TrainingJob CreateRandomTrainingJob()
         {
             return new Filler<TrainingJob>().Create();
-            // Datasource datasource = new()
-            // {
-            //     Id = 1,
-            //     DatasourceType = "Prometheus",
-            //     IsAuthenticated = false,
-            //     Url = "127.0.0.1:9090/api/query"
-            // };
-
-            // Metric metric = new()
-            // {
-            //     Id = 1,
-            //     Name = "Metric1",
-            //     Query = "prometheus_metric1_total",
-            //     Datasource = datasource,
-            //     TrainingSchedule = "@daily"
-            // };
-
-            // return new TrainingJob()
-            // {
-            //     Id = 1,
-            //     Metric = metric,
-            //     ExecutionTime = DateTime.Now,
-            //     Status = "Done"
-            // };
         }
     }
 }
