@@ -48,6 +48,7 @@ namespace AnomalyDetection.Core.Service
             switch (crudEvent.Action)
             {
                 case CrudAction.Create:
+                case CrudAction.Edit:
                     await _trainingJobService.CreateCronJob(crudEvent.Item).ConfigureAwait(false);
                     break;
                 case CrudAction.Delete:

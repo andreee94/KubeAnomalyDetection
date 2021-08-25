@@ -40,7 +40,7 @@ namespace AnomalyDetection.Core.Unit.Tests.Extension.Model
             //Given
             var trainingJob = CreateRandomTrainingJob();
             trainingJob.Metric.Name = "Metric1_Total_Seconds";
-            var expectedName = "trainingjob-metric1-total-seconds";
+            const string expectedName = "trainingjob-metric1-total-seconds";
 
             //When
             var actualName = trainingJob.GetCronJobName();

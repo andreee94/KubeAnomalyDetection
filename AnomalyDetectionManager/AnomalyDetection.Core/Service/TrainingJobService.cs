@@ -58,7 +58,7 @@ namespace AnomalyDetection.Core.Service
                         Name = _options.KubeNamespace
                     }
                 };
-                ns.LogDebug(_logger);
+                ns.LogDebugYaml(_logger);
                 await _kubernetesClient.CreateNamespaceAsync(ns).ConfigureAwait(false);
             }
             else
@@ -69,9 +69,15 @@ namespace AnomalyDetection.Core.Service
 
         public async Task DeleteCronJob(TrainingJob item)
         {
-            if (await ExistsCronJob(item.GetCronJobName()).ConfigureAwait(false))
+            var cronJobName = item.GetCronJobName();
+            if (await ExistsCronJob(cronJobName).ConfigureAwait(false))
             {
-                await _kubernetesClient.DeleteNamespacedCronJobAsync(item.GetCronJobName(), _options.KubeNamespace).ConfigureAwait(false);
+                _logger.LogInformation($"Delete CronJob {cronJobName}");
+                await _kubernetesClient.DeleteNamespacedCronJobAsync(cronJobName, _options.KubeNamespace).ConfigureAwait(false);
+            }
+            else
+            {
+                _logger.LogInformation($"CronJob {cronJobName} does not exist. Not deleting it");
             }
         }
 
@@ -102,7 +108,7 @@ namespace AnomalyDetection.Core.Service
         public async Task CreateCronjob(V1CronJob cronJob, bool replace)
         {
             _logger.LogInformation($"Creating cronjob {cronJob.Metadata.Name}");
-            cronJob.LogDebug(_logger);
+            cronJob.LogDebugYaml(_logger);
             if (replace)
             {
                 // await _kubernetesClient.ReplaceNamespacedCronJobAsync(cronJob, cronJob.Metadata.Name, _options.KubeNamespace)
@@ -116,7 +122,7 @@ namespace AnomalyDetection.Core.Service
         public async Task StartManualJob(V1Job manualJob)
         {
             _logger.LogInformation($"Creating manualjob {manualJob.Metadata.Name}");
-            manualJob.LogDebug(_logger);
+            manualJob.LogDebugYaml(_logger);
             await _kubernetesClient.CreateNamespacedJobAsync(manualJob, _options.KubeNamespace).ConfigureAwait(false);
         }
     }
