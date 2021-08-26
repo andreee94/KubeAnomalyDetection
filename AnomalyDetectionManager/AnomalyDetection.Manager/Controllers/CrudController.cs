@@ -67,7 +67,7 @@ namespace AnomalyDetection.Manager.Controllers
             return result is not null ? Ok(result) : NotFound();
         }
 
-        [HttpPatch]
+        [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> EditById(int id, T item)
         {
