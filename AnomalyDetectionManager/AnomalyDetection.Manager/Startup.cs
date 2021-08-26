@@ -42,19 +42,35 @@ namespace AnomalyDetection.Manager
 
             services.Configure<TrainingJobOptions>(Configuration.GetSection(nameof(TrainingJobOptions)));
 
+            services.AddHostedService<BackgroundQueueService>();
+
             services.AddSingleton<IMetricRepository, MockMetricRepository>();
             services.AddSingleton<IDatasourceRepository, MockDatasourceRepository>();
             services.AddSingleton<ITrainingJobRepository, MockTrainingJobRepository>();
+
             services.AddSingleton<TrainingJobService>();
-            services.AddHostedService<BackgroundQueueService>();
-            services.AddSingleton<IBackgroundQueue>(new DefaultBackgroundQueue(100)); // TODO Read capacity from settings
+            services.AddSingleton<IReloadTrainingJobsService, ReloadTrainingJobsService>();
+            services.AddSingleton<IBackgroundQueueService>(new DefaultBackgroundQueueService(100)); // TODO Read capacity from settings
             AddIKubernetes(services);
         }
 
         private void AddIKubernetes(IServiceCollection services)
         {
-            var kubeConfigPath = Configuration.GetValue<string>("KubeConfigPath");
-            var kubeConfig = KubernetesClientConfiguration.BuildConfigFromConfigFile(kubeConfigPath);
+            // var kubeConfigPath = Configuration.GetValue<string>("KubeConfigPath");
+            // var kubeConfig = KubernetesClientConfiguration.BuildConfigFromConfigFile(kubeConfigPath);
+
+            KubernetesClientConfiguration kubeConfig;
+            KubernetesConnectionOptions options = new();
+            Configuration.GetSection(nameof(KubernetesConnectionOptions)).Bind(options);
+
+            if (options.InCluster)
+            {
+                kubeConfig = KubernetesClientConfiguration.InClusterConfig();
+            }
+            else
+            {
+                kubeConfig = KubernetesClientConfiguration.BuildConfigFromConfigFile(options.KubeConfigPath);
+            }
             services.AddSingleton<IKubernetes>(new Kubernetes(kubeConfig));
         }
 
