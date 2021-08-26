@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using k8s.Models;
+
 namespace AnomalyDetection.Data.Model.Option
 {
     public class TrainingJobOptions
@@ -20,5 +23,7 @@ namespace AnomalyDetection.Data.Model.Option
         public string KubeNamespace { get; set; }
         public string RestartPolicy { get; set; }
         public bool StartImmediate { get; set; }
+        public IList<V1EnvVar> Env { get; set; }
+        public List<string> Args { get; set; }
     }
 }

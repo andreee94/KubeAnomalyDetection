@@ -13,9 +13,9 @@ namespace AnomalyDetection.Core.Service
     {
         private readonly ILogger<BackgroundQueueService> _logger;
         private readonly TrainingJobService _trainingJobService;
-        private readonly IBackgroundQueue _queue;
+        private readonly IBackgroundQueueService _queue;
 
-        public BackgroundQueueService(ILogger<BackgroundQueueService> logger, TrainingJobService trainingJobService, IBackgroundQueue queue)
+        public BackgroundQueueService(ILogger<BackgroundQueueService> logger, TrainingJobService trainingJobService, IBackgroundQueueService queue)
         {
             _logger = logger;
             _queue = queue;

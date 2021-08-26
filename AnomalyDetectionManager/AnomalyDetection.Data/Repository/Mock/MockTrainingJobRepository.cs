@@ -29,7 +29,8 @@ namespace AnomalyDetection.Data.Repository.Mock
                 Id = 1,
                 Name = "Metric1",
                 Query = "prometheus_metric1_total",
-                Datasource = prometheus
+                Datasource = prometheus,
+                TrainingSchedule = "* * * * *"
             };
 
             Metric metric2 = new()
@@ -37,7 +38,8 @@ namespace AnomalyDetection.Data.Repository.Mock
                 Id = 1,
                 Name = "Metric2",
                 Query = "prometheus_metric2_total",
-                Datasource = prometheus
+                Datasource = prometheus,
+                TrainingSchedule = "8 * * * *"
             };
 
             _trainingJobList = new List<TrainingJob> {

@@ -72,7 +72,7 @@ namespace AnomalyDetection.Core.Unit.Tests.Service
         {
             var trainingJob = new Filler<TrainingJob>().Create();
 
-            return trainingJob.ToCronJob("image", "Always", "Never");
+            return trainingJob.ToCronJob("image", "Always", "Never", new List<V1EnvVar>(), new List<string>());
         }
     }
 }

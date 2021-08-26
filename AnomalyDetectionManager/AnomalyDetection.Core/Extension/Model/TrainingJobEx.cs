@@ -10,7 +10,7 @@ namespace AnomalyDetection.Core.Extension.Model
         public static void ThrowIfNull(this object obj)
         {
             if (obj == null)
-                    throw new NullReferenceException();
+                throw new NullReferenceException();
         }
 
         public static string GetCronJobName(this TrainingJob trainingJob)
@@ -22,8 +22,14 @@ namespace AnomalyDetection.Core.Extension.Model
             return $"TrainingJob-{trainingJob.Metric.Name}".Replace("_", "-").ToLower();
         }
 
-        public static V1CronJob ToCronJob(this TrainingJob trainingJob, string image, string imagePullPolicy, string restartPolicy)
+        public static V1CronJob ToCronJob(this TrainingJob trainingJob, string image, string imagePullPolicy, string restartPolicy, IList<V1EnvVar> envList, IList<string> argList)
         {
+            envList.Add(new()
+            {
+                Name = "QUERY", // TODO choose between Query and QUERY
+                Value = trainingJob.Metric.Query
+            });
+
             return new V1CronJob
             {
                 ApiVersion = $"{V1CronJob.KubeGroup}/{V1CronJob.KubeApiVersion}",
@@ -54,13 +60,7 @@ namespace AnomalyDetection.Core.Extension.Model
                                             Name = "trainingjob-container",
                                             Image = image,
                                             ImagePullPolicy = imagePullPolicy,
-                                            Env = new List<V1EnvVar>
-                                            {
-                                                new() {
-                                                    Name = "Query",
-                                                    Value = trainingJob.Metric.Query
-                                                }
-                                            },
+                                            Env = envList,
                                             Command = new List<string> {"sh", "-c"},
                                             Args = new List<string> {"sleep 10 && echo ${Query}"}
                                         }

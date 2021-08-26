@@ -98,9 +98,9 @@ namespace AnomalyDetection.Manager.Controllers
             return result is not null ? Ok() : NotFound();
         }
 
-        protected virtual async Task ProcessCrudEvent(CrudEvent<T> crudEvent)
+        protected virtual Task ProcessCrudEvent(CrudEvent<T> crudEvent)
         {
-
+            return Task.CompletedTask;
         }
     }
 }

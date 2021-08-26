@@ -30,7 +30,7 @@ namespace AnomalyDetection.Core.Service
         {
             await CreateNamespaceIfNotExistsAsync(_options.KubeNamespace).ConfigureAwait(false);
 
-            var cronJob = trainingJob.ToCronJob(_options.Image, _options.ImagePullPolicy, _options.RestartPolicy);
+            var cronJob = trainingJob.ToCronJob(_options.Image, _options.ImagePullPolicy, _options.RestartPolicy, _options.Env, _options.Args);
 
             await CreateCronjob(cronJob, await ExistsCronJob(cronJob).ConfigureAwait(false)).ConfigureAwait(false);
 

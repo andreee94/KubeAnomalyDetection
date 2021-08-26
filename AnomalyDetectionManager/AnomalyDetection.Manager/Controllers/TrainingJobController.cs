@@ -16,16 +16,16 @@ namespace AnomalyDetection.Manager.Controllers
     [Route("api/[controller]")]
     public class TrainingJobController  : CrudController<TrainingJob>
     {
-        private readonly IBackgroundQueue _queue;
+        private readonly IBackgroundQueueService _queue;
 
-        public TrainingJobController(ILogger<TrainingJobController> logger, ITrainingJobRepository repository, IBackgroundQueue queue)
+        public TrainingJobController(ILogger<TrainingJobController> logger, ITrainingJobRepository repository, IBackgroundQueueService queue)
             : base(logger, repository)
         {
             this._queue = queue;
         }
         protected override async Task ProcessCrudEvent(CrudEvent<TrainingJob> crudEvent)
         {
-            await _queue.QueueBackgroundCrudEventAsync(crudEvent).ConfigureAwait(false);
+            await _queue.EnqueueAsync(crudEvent).ConfigureAwait(false);
         }
     }
 }

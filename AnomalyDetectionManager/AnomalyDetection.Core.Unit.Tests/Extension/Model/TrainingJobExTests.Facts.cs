@@ -6,6 +6,7 @@ using FluentAssertions;
 using k8s.Models;
 using Xunit;
 using Tynamix.ObjectFiller;
+using System.Collections.Generic;
 
 namespace AnomalyDetection.Core.Unit.Tests.Extension.Model
 {
@@ -19,9 +20,11 @@ namespace AnomalyDetection.Core.Unit.Tests.Extension.Model
             const string image = "test/image";
             const string imagePullPolicy = "Always";
             const string restartPolicy = "Never";
+            IList<V1EnvVar> envList = new List<V1EnvVar>() { new() { Name = "envName", Value = "envValue" } };
+            IList<string> argList = new List<string>() { "arg1", "arg2" };
 
             //When
-            var cronJob = trainingJob.ToCronJob(image, imagePullPolicy, restartPolicy);
+            var cronJob = trainingJob.ToCronJob(image, imagePullPolicy, restartPolicy, envList, argList);
 
             //Then
             cronJob.Kind.Should().BeSameAs(V1CronJob.KubeKind);
@@ -31,6 +34,9 @@ namespace AnomalyDetection.Core.Unit.Tests.Extension.Model
             containerList.Should().HaveCount(1);
             containerList[0].Image.Should().BeSameAs(image);
             containerList[0].ImagePullPolicy.Should().BeSameAs(imagePullPolicy);
+            // containerList[0].Args.Should().BeSameAs(argList); // NOT IMPLEMENTED YET
+            containerList[0].Env.Should().BeSameAs(envList);
+            containerList[0].Env.Should().Contain(x => x.Name == "QUERY");
             cronJob.Spec.JobTemplate.Spec.Template.Spec.RestartPolicy.Should().BeSameAs(restartPolicy);
         }
 
