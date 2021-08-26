@@ -18,6 +18,8 @@ namespace AnomalyDetection.Manager
         {
             var host = CreateHostBuilder(args).Build();
 
+            await host.Services.GetService<IReloadTrainingJobsService>().Run().ConfigureAwait(false);
+
             // var trainingJobService = host.Services.GetService<TrainingJobService>();
 
             // var datasource = new Datasource()
