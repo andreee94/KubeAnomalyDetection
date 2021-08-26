@@ -6,9 +6,9 @@ using AnomalyDetection.Data.Model.Queue;
 
 namespace AnomalyDetection.Core.Service.Queue
 {
-    public interface IBackgroundQueue
+    public interface IBackgroundQueueService
     {
-        ValueTask QueueBackgroundCrudEventAsync(CrudEvent<TrainingJob> crudEvent);
+        ValueTask EnqueueAsync(CrudEvent<TrainingJob> crudEvent);
 
         ValueTask<CrudEvent<TrainingJob>> DequeueAsync(CancellationToken cancellationToken);
     }

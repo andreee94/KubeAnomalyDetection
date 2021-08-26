@@ -7,11 +7,11 @@ using AnomalyDetection.Data.Model.Queue;
 
 namespace AnomalyDetection.Core.Service.Queue
 {
-    public class DefaultBackgroundQueue : IBackgroundQueue
+    public class DefaultBackgroundQueueService : IBackgroundQueueService
     {
         private readonly Channel<CrudEvent<TrainingJob>> _queue;
 
-        public DefaultBackgroundQueue(int capacity)
+        public DefaultBackgroundQueueService(int capacity)
         {
             BoundedChannelOptions options = new(capacity)
             {
@@ -20,7 +20,7 @@ namespace AnomalyDetection.Core.Service.Queue
             _queue = Channel.CreateBounded<CrudEvent<TrainingJob>>(options);
         }
 
-        public async ValueTask QueueBackgroundCrudEventAsync(CrudEvent<TrainingJob> item)
+        public async ValueTask EnqueueAsync(CrudEvent<TrainingJob> item)
         {
             if (item is null)
             {
