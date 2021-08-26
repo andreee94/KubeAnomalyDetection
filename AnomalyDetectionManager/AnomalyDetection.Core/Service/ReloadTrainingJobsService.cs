@@ -31,5 +31,7 @@ namespace AnomalyDetection.Core.Service
                 await _trainingJobService.CreateCronJob(trainingJob).ConfigureAwait(false);
             }
         }
+
+        void System.IDisposable.Dispose() {}
     }
 }

@@ -6,20 +6,21 @@ using System;
 using AnomalyDetection.Core.Service.Queue;
 using AnomalyDetection.Data.Model.Queue;
 using AnomalyDetection.Data.Model;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AnomalyDetection.Core.Service
 {
     public class BackgroundQueueService : BackgroundService
     {
         private readonly ILogger<BackgroundQueueService> _logger;
-        private readonly TrainingJobService _trainingJobService;
         private readonly IBackgroundQueueService _queue;
+        private readonly IServiceProvider _serviceProvider;
 
-        public BackgroundQueueService(ILogger<BackgroundQueueService> logger, TrainingJobService trainingJobService, IBackgroundQueueService queue)
+        public BackgroundQueueService(ILogger<BackgroundQueueService> logger, IBackgroundQueueService queue, IServiceProvider serviceProvider)
         {
             _logger = logger;
             _queue = queue;
-            _trainingJobService = trainingJobService;
+            _serviceProvider = serviceProvider;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -45,14 +46,18 @@ namespace AnomalyDetection.Core.Service
 
         public async Task ProcessCrudEvent(CrudEvent<TrainingJob> crudEvent)
         {
+            using IServiceScope scope = _serviceProvider.CreateScope();
+
+            TrainingJobService trainingJobService = scope.ServiceProvider.GetRequiredService<TrainingJobService>();
+
             switch (crudEvent.Action)
             {
                 case CrudAction.Create:
                 case CrudAction.Edit:
-                    await _trainingJobService.CreateCronJob(crudEvent.Item).ConfigureAwait(false);
+                    await trainingJobService.CreateCronJob(crudEvent.Item).ConfigureAwait(false);
                     break;
                 case CrudAction.Delete:
-                    await _trainingJobService.DeleteCronJob(crudEvent.Item).ConfigureAwait(false);
+                    await trainingJobService.DeleteCronJob(crudEvent.Item).ConfigureAwait(false);
                     break;
                 default:
                     _logger.LogError($"Not able to process action: {crudEvent.Action}");

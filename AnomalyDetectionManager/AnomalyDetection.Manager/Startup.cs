@@ -17,6 +17,9 @@ using k8s;
 using AnomalyDetection.Core.Service;
 using AnomalyDetection.Data.Model.Option;
 using AnomalyDetection.Core.Service.Queue;
+using AnomalyDetection.Data.Context;
+using Microsoft.EntityFrameworkCore;
+using AnomalyDetection.Data.Repository.Database;
 
 namespace AnomalyDetection.Manager
 {
@@ -41,17 +44,22 @@ namespace AnomalyDetection.Manager
 
 
             services.Configure<TrainingJobOptions>(Configuration.GetSection(nameof(TrainingJobOptions)));
+            services.Configure<DbProviderOptions>(Configuration.GetSection(nameof(DbProviderOptions)));
 
             services.AddHostedService<BackgroundQueueService>();
 
-            services.AddSingleton<IMetricRepository, MockMetricRepository>();
-            services.AddSingleton<IDatasourceRepository, MockDatasourceRepository>();
-            services.AddSingleton<ITrainingJobRepository, MockTrainingJobRepository>();
+            // services.AddSingleton<IDatasourceRepository, MockDatasourceRepository>();
+            services.AddScoped<IDatasourceRepository, DbDatasourceRepository>();
+            services.AddScoped<IMetricRepository, DbMetricRepository>();
+            services.AddScoped<ITrainingJobRepository, DbTrainingJobRepository>();
 
-            services.AddSingleton<TrainingJobService>();
-            services.AddSingleton<IReloadTrainingJobsService, ReloadTrainingJobsService>();
+            services.AddScoped<TrainingJobService>();
+            services.AddScoped<IReloadTrainingJobsService, ReloadTrainingJobsService>();
             services.AddSingleton<IBackgroundQueueService>(new DefaultBackgroundQueueService(100)); // TODO Read capacity from settings
+
+            // services.AddDbContext<ManagerContext>();
             AddIKubernetes(services);
+            AddDBContext(services);
         }
 
         private void AddIKubernetes(IServiceCollection services)
@@ -74,6 +82,24 @@ namespace AnomalyDetection.Manager
             services.AddSingleton<IKubernetes>(new Kubernetes(kubeConfig));
         }
 
+        private void AddDBContext(IServiceCollection services)
+        {
+            DbProviderOptions options = new();
+            Configuration.GetSection(nameof(DbProviderOptions)).Bind(options);
+
+            switch (options.DbType.ToLower())
+            {
+                case "sqlite":
+                    services.AddDbContext<ManagerContext>(o => o.UseSqlite(options.ConnectionString));
+                    break;
+                case "postgres":
+                    services.AddDbContext<ManagerContext>(o => o.UseNpgsql(options.ConnectionString));
+                    break;
+                default:
+                    throw new Exception($"DbProviderOptions.DbType not recognized: {options.DbType}");
+            }
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -94,6 +120,15 @@ namespace AnomalyDetection.Manager
             {
                 endpoints.MapControllers();
             });
+
+            EnsureDbCreation(app.ApplicationServices);
+        }
+
+        private static void EnsureDbCreation(IServiceProvider provider)
+        {
+            using var serviceScope = provider.CreateScope();
+            using var db = serviceScope.ServiceProvider.GetService<ManagerContext>();
+            db.Database.EnsureCreated();
         }
     }
 }

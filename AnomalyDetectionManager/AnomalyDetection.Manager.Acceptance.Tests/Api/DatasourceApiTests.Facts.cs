@@ -30,7 +30,7 @@ namespace AnomalyDetection.Manager.Acceptance.Tests.Api
                                                           .Excluding(item => item.Id));
             fetchedDatasource.Should().BeEquivalentTo(addedDatasource);
             await deleteAction.Should().ThrowAsync<HttpResponseNotFoundException>().ConfigureAwait(false);
-            allDatasources.Should().NotContain(addedDatasource);
+            allDatasources?.Should().NotContain(addedDatasource);
         }
 
         [Fact]

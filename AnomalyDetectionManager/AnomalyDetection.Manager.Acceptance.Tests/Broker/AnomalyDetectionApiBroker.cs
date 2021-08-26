@@ -12,7 +12,7 @@ namespace AnomalyDetection.Manager.Acceptance.Tests.Broker
 
         public AnomalyDetectionApiBroker()
         {
-            this.webApplicationFactory = new WebApplicationFactory<Startup>();
+            this.webApplicationFactory = new InMemorySqliteWebApplicationFactory<Startup>();
             this.baseClient = this.webApplicationFactory.CreateClient();
             this.apiFactoryClient = new RESTFulApiFactoryClient(this.baseClient);
         }

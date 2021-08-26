@@ -15,49 +15,50 @@ namespace AnomalyDetection.Data.Repository.Mock
         public MockTrainingJobRepository()
         {
             _random = new Random();
+            _trainingJobList = new List<TrainingJob>();
 
-            Datasource prometheus = new()
-            {
-                Id = 1,
-                DatasourceType = "Prometheus",
-                IsAuthenticated = false,
-                Url = "127.0.0.1:9090/api/query"
-            };
+            // Datasource prometheus = new()
+            // {
+            //     Id = 1,
+            //     DatasourceType = "Prometheus",
+            //     IsAuthenticated = false,
+            //     Url = "127.0.0.1:9090/api/query"
+            // };
 
-            Metric metric1 = new()
-            {
-                Id = 1,
-                Name = "Metric1",
-                Query = "prometheus_metric1_total",
-                Datasource = prometheus,
-                TrainingSchedule = "* * * * *"
-            };
+            // Metric metric1 = new()
+            // {
+            //     Id = 1,
+            //     Name = "Metric1",
+            //     Query = "prometheus_metric1_total",
+            //     Datasource = prometheus,
+            //     TrainingSchedule = "* * * * *"
+            // };
 
-            Metric metric2 = new()
-            {
-                Id = 1,
-                Name = "Metric2",
-                Query = "prometheus_metric2_total",
-                Datasource = prometheus,
-                TrainingSchedule = "8 * * * *"
-            };
+            // Metric metric2 = new()
+            // {
+            //     Id = 1,
+            //     Name = "Metric2",
+            //     Query = "prometheus_metric2_total",
+            //     Datasource = prometheus,
+            //     TrainingSchedule = "8 * * * *"
+            // };
 
-            _trainingJobList = new List<TrainingJob> {
-                new()
-                {
-                    Id = 1,
-                    Metric = metric1,
-                    ExecutionTime = DateTime.Now,
-                    Status = "Done"
-                },
-                new()
-                {
-                    Id = 2,
-                    Metric = metric2,
-                    ExecutionTime = DateTime.Now,
-                    Status = "Running"
-                }
-            };
+            // _trainingJobList = new List<TrainingJob> {
+            //     new()
+            //     {
+            //         Id = 1,
+            //         Metric = metric1,
+            //         ExecutionTime = DateTime.Now,
+            //         Status = "Done"
+            //     },
+            //     new()
+            //     {
+            //         Id = 2,
+            //         Metric = metric2,
+            //         ExecutionTime = DateTime.Now,
+            //         Status = "Running"
+            //     }
+            // };
         }
 
         public Task<TrainingJob?> AddAsync(TrainingJob trainingJob)
@@ -88,9 +89,9 @@ namespace AnomalyDetection.Data.Repository.Mock
             if (trainingJob is not null)
             {
                 trainingJob.Metric = newTrainingJob.Metric;
-                trainingJob.ExecutionTime = newTrainingJob.ExecutionTime;
+                trainingJob.CreationTime = newTrainingJob.CreationTime;
                 trainingJob.Status = newTrainingJob.Status;
-                
+
                 return Task.FromResult((TrainingJob?)trainingJob);
             }
             return Task.FromResult((TrainingJob?)null);

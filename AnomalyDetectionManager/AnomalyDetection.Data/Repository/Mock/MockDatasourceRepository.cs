@@ -15,16 +15,17 @@ namespace AnomalyDetection.Data.Repository.Mock
         public MockDatasourceRepository()
         {
             _random = new Random();
+            _datasourceList = new List<Datasource> ();
 
-            _datasourceList = new List<Datasource> {
-                new()
-                {
-                    Id = 1,
-                    DatasourceType = "Prometheus",
-                    IsAuthenticated = false,
-                    Url = "127.0.0.1:9090/api/query"
-                }
-            };
+            // _datasourceList = new List<Datasource> {
+            //     new()
+            //     {
+            //         Id = 1,
+            //         DatasourceType = "Prometheus",
+            //         IsAuthenticated = false,
+            //         Url = "127.0.0.1:9090/api/query"
+            //     }
+            // };
         }
 
         public Task<Datasource?> AddAsync(Datasource datasource)

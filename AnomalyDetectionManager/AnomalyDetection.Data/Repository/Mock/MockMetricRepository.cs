@@ -15,35 +15,35 @@ namespace AnomalyDetection.Data.Repository.Mock
         public MockMetricRepository()
         {
             _random = new Random();
+            _metricList = new List<Metric>();
+            // Datasource prometheus = new()
+            // {
+            //     Id = 1,
+            //     DatasourceType = "Prometheus",
+            //     IsAuthenticated = false,
+            //     Url = "127.0.0.1:9090/api/query"
+            // };
 
-            Datasource prometheus = new()
-            {
-                Id = 1,
-                DatasourceType = "Prometheus",
-                IsAuthenticated = false,
-                Url = "127.0.0.1:9090/api/query"
-            };
-
-            _metricList = new List<Metric> {
-                new () {
-                Id = 1,
-                    Name = "Metric1",
-                    Query = "prometheus_metric1_total",
-                    Datasource = prometheus
-                },
-                new () {
-                Id = 2,
-                    Name = "Metric2",
-                    Query = "prometheus_metric2_total",
-                    Datasource = prometheus
-                },
-                new () {
-                Id = 3,
-                    Name = "Metric2",
-                    Query = "prometheus_metric2_total",
-                    Datasource = prometheus
-                }
-            };
+            // _metricList = new List<Metric> {
+            //     new () {
+            //     Id = 1,
+            //         Name = "Metric1",
+            //         Query = "prometheus_metric1_total",
+            //         Datasource = prometheus
+            //     },
+            //     new () {
+            //     Id = 2,
+            //         Name = "Metric2",
+            //         Query = "prometheus_metric2_total",
+            //         Datasource = prometheus
+            //     },
+            //     new () {
+            //     Id = 3,
+            //         Name = "Metric2",
+            //         Query = "prometheus_metric2_total",
+            //         Datasource = prometheus
+            //     }
+            // };
         }
 
         public Task<Metric?> AddAsync(Metric metric)

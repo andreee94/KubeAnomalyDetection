@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using AnomalyDetection.Data.Model;
+using AnomalyDetection.Data.Context;
 
 namespace AnomalyDetection.Manager
 {
@@ -18,56 +19,29 @@ namespace AnomalyDetection.Manager
         {
             var host = CreateHostBuilder(args).Build();
 
-            await host.Services.GetService<IReloadTrainingJobsService>().Run().ConfigureAwait(false);
+            // EnsureDbCreation(host.Services);
 
-            // var trainingJobService = host.Services.GetService<TrainingJobService>();
-
-            // var datasource = new Datasource()
-            // {
-            //     DatasourceType = "DatasourceType",
-            //     Id = 1,
-            //     IsAuthenticated = true,
-            //     Password = "password",
-            //     Username = "username",
-            //     Url = "url"
-            // };
-
-            // var trainingJob1 = new TrainingJob()
-            // {
-            //     Metric = new Metric()
-            //     {
-            //         Datasource = datasource,
-            //         Name = "metric1",
-            //         Query = "metric1_total",
-            //         Id = 1,
-            //         TrainingSchedule = "* * * * *" // every minute
-            //     },
-            //     Id = 1,
-            //     Status = "Unknown",
-            //     ExecutionTime = DateTime.Now
-            // };
-            
-            // var trainingJob2 = new TrainingJob()
-            // {
-            //     Metric = new Metric()
-            //     {
-            //         Datasource = datasource,
-            //         Name = "metric2",
-            //         Query = "metric2_total_new",
-            //         Id = 2,
-            //         TrainingSchedule = "* * * * *" // every minute
-            //     },
-            //     Id = 2,
-            //     Status = "Unknown",
-            //     ExecutionTime = DateTime.Now
-            // };
-
-            // await trainingJobService.RunSingleJobs(trainingJob1).ConfigureAwait(false);
-            
-            // await trainingJobService.RunSingleJobs(trainingJob2).ConfigureAwait(false);
+            await ReloadTrainingJobs(host.Services).ConfigureAwait(false);
 
             host.Run();
+        }
 
+        // private static void EnsureDbCreation(IServiceProvider provider)
+        // {
+        //     using (var serviceScope = provider.CreateScope())
+        //     using (var db = serviceScope.ServiceProvider.GetService<ManagerContext>())
+        //     {
+        //         db.Database.EnsureCreated();
+        //     }
+        // }
+
+        private static async Task ReloadTrainingJobs(IServiceProvider provider)
+        {
+            using (var serviceScope = provider.CreateScope())
+            using (var service = serviceScope.ServiceProvider.GetService<IReloadTrainingJobsService>())
+            {
+                await service.Run().ConfigureAwait(false);
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

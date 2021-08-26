@@ -1,15 +1,21 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace AnomalyDetection.Data.Model
 {
-    public class TrainingJob: CrudModel
+    public class TrainingJob : CrudModel
     {
+        [Required]
         public Metric Metric { get; set; }
-        public DateTime ExecutionTime { get; set; }
+
+        public DateTime CreationTime { get; set; }
+
+        [Required]
+        [MaxLength(16)]
         public string Status { get; set; }
-        
+
         // public string Hash()
         // {
         //     StringBuilder sb = new();

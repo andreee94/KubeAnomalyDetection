@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AnomalyDetection.Core.Service;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AnomalyDetection.Core.Service
 {
-    public interface IReloadTrainingJobsService
+    public interface IReloadTrainingJobsService : IDisposable
     {
         Task Run();
     }
