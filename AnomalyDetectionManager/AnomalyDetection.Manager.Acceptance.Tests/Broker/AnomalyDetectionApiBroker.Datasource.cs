@@ -16,8 +16,7 @@ namespace AnomalyDetection.Manager.Acceptance.Tests.Broker
             => await this.apiFactoryClient.GetContentAsync<Datasource>($"{DatasourceRelativeUrl}/{id}").ConfigureAwait(false);
         public async Task DeleteDatasourceAsync(int id)
             => await this.apiFactoryClient.DeleteContentAsync($"{DatasourceRelativeUrl}/{id}").ConfigureAwait(false);
-
-        // public async Task EditDatasourceAsync(int id)
-        //     => await this.apiFactoryClient.EditContentAsync($"{DatasourceRelativeUrl}/{id}").ConfigureAwait(false);
+        public async Task EditDatasourceAsync(int id, Datasource datasource)
+            => await this.apiFactoryClient.PutContentAsync<Datasource>($"{DatasourceRelativeUrl}/{id}", datasource).ConfigureAwait(false);
     }
 }
