@@ -2,17 +2,18 @@ using System;
 using AnomalyDetection.Data.Repository;
 using Xunit;
 using Moq;
-using AnomalyDetection.Data.Model;
+
 using Microsoft.Extensions.Logging;
 using AnomalyDetection.Manager.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using AnomalyDetection.Data.Model.Api;
 
 namespace AnomalyDetection.Manager.Unit.Tests.Controllers
 {
-    public abstract partial class CrudControllerTests<T> where T : CrudModel
+    public abstract partial class CrudControllerTests<T> where T : ApiCrudModel
     {
         [Fact]
         public async Task AddAsync_WithNullItem_ShouldReturnBadRequest()
@@ -128,7 +129,7 @@ namespace AnomalyDetection.Manager.Unit.Tests.Controllers
             var controller = new CrudController<T>(_loggerStub.Object, _repositoryStub.Object);
 
             // Act
-            var result = await controller.GetById(item.Id).ConfigureAwait(false);
+            var result = await controller.GetById((int)item.Id).ConfigureAwait(false);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -188,7 +189,7 @@ namespace AnomalyDetection.Manager.Unit.Tests.Controllers
             var controller = new CrudController<T>(_loggerStub.Object, _repositoryStub.Object);
 
             // Act
-            var result = await controller.EditById(item.Id, item).ConfigureAwait(false);
+            var result = await controller.EditById((int)item.Id, item).ConfigureAwait(false);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();

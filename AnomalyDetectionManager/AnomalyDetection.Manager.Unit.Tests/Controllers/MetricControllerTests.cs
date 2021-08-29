@@ -1,13 +1,14 @@
-using AnomalyDetection.Data.Model;
+
+using AnomalyDetection.Data.Model.Api;
 using Tynamix.ObjectFiller;
 
 namespace AnomalyDetection.Manager.Unit.Tests.Controllers
 {
-    public class MetricControllerTests : CrudControllerTests<Metric>
+    public class MetricControllerTests : CrudControllerTests<ApiMetric>
     {
-        protected override Metric CreateRandomItem()
+        protected override ApiMetric CreateRandomItem()
         {
-            return new Filler<Metric>().Create();
+            return new Filler<ApiMetric>().Create();
 
             // Datasource datasource = new()
             // {
@@ -17,7 +18,7 @@ namespace AnomalyDetection.Manager.Unit.Tests.Controllers
             //     DatasourceType = "type"
             // };
 
-            // return new Metric
+            // return new ApiMetric
             // {
             //     Id = _random.Next(1000000),
             //     Datasource = datasource,

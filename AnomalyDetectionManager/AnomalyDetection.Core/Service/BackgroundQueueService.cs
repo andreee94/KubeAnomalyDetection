@@ -5,8 +5,8 @@ using System.Threading;
 using System;
 using AnomalyDetection.Core.Service.Queue;
 using AnomalyDetection.Data.Model.Queue;
-using AnomalyDetection.Data.Model;
 using Microsoft.Extensions.DependencyInjection;
+using AnomalyDetection.Data.Model.Api;
 
 namespace AnomalyDetection.Core.Service
 {
@@ -44,7 +44,7 @@ namespace AnomalyDetection.Core.Service
             }
         }
 
-        public async Task ProcessCrudEvent(CrudEvent<TrainingJob> crudEvent)
+        public async Task ProcessCrudEvent(CrudEvent<ApiTrainingJob> crudEvent)
         {
             using IServiceScope scope = _serviceProvider.CreateScope();
 

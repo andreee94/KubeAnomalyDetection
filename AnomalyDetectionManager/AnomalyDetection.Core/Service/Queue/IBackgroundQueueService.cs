@@ -1,16 +1,15 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AnomalyDetection.Data.Model;
+using AnomalyDetection.Data.Model.Api;
 using AnomalyDetection.Data.Model.Queue;
 
 namespace AnomalyDetection.Core.Service.Queue
 {
     public interface IBackgroundQueueService
     {
-        ValueTask EnqueueAsync(CrudEvent<TrainingJob> crudEvent);
+        ValueTask EnqueueAsync(CrudEvent<ApiTrainingJob> crudEvent);
 
-        ValueTask<CrudEvent<TrainingJob>> DequeueAsync(CancellationToken cancellationToken);
+        ValueTask<CrudEvent<ApiTrainingJob>> DequeueAsync(CancellationToken cancellationToken);
     }
 
 }

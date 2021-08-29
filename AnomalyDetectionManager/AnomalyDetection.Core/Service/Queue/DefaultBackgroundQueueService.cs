@@ -2,14 +2,15 @@ using System;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using AnomalyDetection.Data.Model;
+
+using AnomalyDetection.Data.Model.Api;
 using AnomalyDetection.Data.Model.Queue;
 
 namespace AnomalyDetection.Core.Service.Queue
 {
     public class DefaultBackgroundQueueService : IBackgroundQueueService
     {
-        private readonly Channel<CrudEvent<TrainingJob>> _queue;
+        private readonly Channel<CrudEvent<ApiTrainingJob>> _queue;
 
         public DefaultBackgroundQueueService(int capacity)
         {
@@ -17,10 +18,10 @@ namespace AnomalyDetection.Core.Service.Queue
             {
                 FullMode = BoundedChannelFullMode.Wait
             };
-            _queue = Channel.CreateBounded<CrudEvent<TrainingJob>>(options);
+            _queue = Channel.CreateBounded<CrudEvent<ApiTrainingJob>>(options);
         }
 
-        public async ValueTask EnqueueAsync(CrudEvent<TrainingJob> item)
+        public async ValueTask EnqueueAsync(CrudEvent<ApiTrainingJob> item)
         {
             if (item is null)
             {
@@ -30,7 +31,7 @@ namespace AnomalyDetection.Core.Service.Queue
             await _queue.Writer.WriteAsync(item).ConfigureAwait(false);
         }
 
-        public async ValueTask<CrudEvent<TrainingJob>> DequeueAsync(CancellationToken cancellationToken)
+        public async ValueTask<CrudEvent<ApiTrainingJob>> DequeueAsync(CancellationToken cancellationToken)
         {
             return await _queue.Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
         }

@@ -1,16 +1,16 @@
 using System;
 using System.Linq;
-using AnomalyDetection.Core.Extension.Model;
-using AnomalyDetection.Data.Model;
 using FluentAssertions;
 using k8s.Models;
 using Xunit;
 using Tynamix.ObjectFiller;
+using AnomalyDetection.Core.Extension.Model.Api;
 using System.Collections.Generic;
+using AnomalyDetection.Data.Model.Api;
 
-namespace AnomalyDetection.Core.Unit.Tests.Extension.Model
+namespace AnomalyDetection.Core.Unit.Tests.Extension.Model.Api
 {
-    public partial class TrainingJobExTests
+    public partial class ApiTrainingJobExTests
     {
         [Fact]
         public void ToCronJob_FromTrainingJob_ShouldReturnValidCronJob()
@@ -59,10 +59,10 @@ namespace AnomalyDetection.Core.Unit.Tests.Extension.Model
         public void GetCronJobName_WithNull_ShouldThrowNullReferenceException()
         {
             //Given
-            TrainingJob trainingJob1 = null;
-            TrainingJob trainingJob2 = CreateRandomTrainingJob();
+            ApiTrainingJob trainingJob1 = null;
+            ApiTrainingJob trainingJob2 = CreateRandomTrainingJob();
             trainingJob2.Metric = null;
-            TrainingJob trainingJob3 = CreateRandomTrainingJob();
+            ApiTrainingJob trainingJob3 = CreateRandomTrainingJob();
             trainingJob3.Metric.Name = null;
 
             //When

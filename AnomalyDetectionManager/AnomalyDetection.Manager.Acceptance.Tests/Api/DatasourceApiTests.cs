@@ -1,11 +1,13 @@
 using System;
 using System.Threading.Tasks;
-using AnomalyDetection.Data.Model;
+
 using AnomalyDetection.Manager.Acceptance.Tests.Broker;
 using FluentAssertions;
 using Tynamix.ObjectFiller;
 using Xunit;
 using RESTFulSense.Exceptions;
+using AnomalyDetection.Data.Model.Api;
+using AutoMapper;
 
 namespace AnomalyDetection.Manager.Acceptance.Tests.Api
 {
@@ -14,6 +16,7 @@ namespace AnomalyDetection.Manager.Acceptance.Tests.Api
     {
         private readonly AnomalyDetectionApiBroker _broker;
         private readonly Random _random;
+        
 
         public DatasourceApiTests(AnomalyDetectionApiBroker broker)
         {
@@ -21,9 +24,13 @@ namespace AnomalyDetection.Manager.Acceptance.Tests.Api
             _random = new Random();
         }
 
-        private static Datasource CreateRandomItem()
+        private static ApiDatasource CreateRandomDatasource()
         {
-            return new Filler<Datasource>().Create();
+            return new Filler<ApiDatasource>().Create();
+        }
+        private static T CreateRandomItem<T>() where T : class
+        {
+            return new Filler<T>().Create();
         }
     }
 }

@@ -1,17 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AnomalyDetection.Data.Repository.Mock;
 using AnomalyDetection.Data.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using k8s;
 using AnomalyDetection.Core.Service;
@@ -20,6 +13,7 @@ using AnomalyDetection.Core.Service.Queue;
 using AnomalyDetection.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using AnomalyDetection.Data.Repository.Database;
+using AnomalyDetection.Data.Mappings;
 
 namespace AnomalyDetection.Manager
 {
@@ -42,6 +36,7 @@ namespace AnomalyDetection.Manager
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AnomalyDetection.Manager", Version = "v1" });
             });
 
+            services.AddAutoMapper(typeof(ManagerProfile));
 
             services.Configure<TrainingJobOptions>(Configuration.GetSection(nameof(TrainingJobOptions)));
             services.Configure<DbProviderOptions>(Configuration.GetSection(nameof(DbProviderOptions)));
@@ -90,10 +85,18 @@ namespace AnomalyDetection.Manager
             switch (options.DbType.ToLower())
             {
                 case "sqlite":
-                    services.AddDbContext<ManagerContext>(o => o.UseSqlite(options.ConnectionString));
+                    services.AddDbContext<ManagerContext>(o =>
+                    {
+                        // o.EnableSensitiveDataLogging();
+                        o.UseSqlite(options.ConnectionString);
+                    });
                     break;
                 case "postgres":
-                    services.AddDbContext<ManagerContext>(o => o.UseNpgsql(options.ConnectionString));
+                    services.AddDbContext<ManagerContext>(o =>
+                    {
+                        // o.EnableSensitiveDataLogging();
+                        o.UseNpgsql(options.ConnectionString);
+                    });
                     break;
                 default:
                     throw new Exception($"DbProviderOptions.DbType not recognized: {options.DbType}");

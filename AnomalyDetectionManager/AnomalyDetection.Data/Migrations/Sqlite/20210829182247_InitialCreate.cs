@@ -33,8 +33,8 @@ namespace AnomalyDetection.Data.Migrations.Sqlite
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 64, nullable: false),
                     Query = table.Column<string>(type: "TEXT", nullable: false),
-                    DatasourceId = table.Column<int>(type: "INTEGER", nullable: true),
-                    TrainingSchedule = table.Column<string>(type: "TEXT", maxLength: 16, nullable: false)
+                    TrainingSchedule = table.Column<string>(type: "TEXT", maxLength: 16, nullable: false),
+                    DatasourceId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,7 +44,7 @@ namespace AnomalyDetection.Data.Migrations.Sqlite
                         column: x => x.DatasourceId,
                         principalTable: "Datasources",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,9 +69,21 @@ namespace AnomalyDetection.Data.Migrations.Sqlite
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Datasources_Name",
+                table: "Datasources",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Metrics_DatasourceId",
                 table: "Metrics",
                 column: "DatasourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Metrics_Name",
+                table: "Metrics",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_TrainingJobs_MetricId",

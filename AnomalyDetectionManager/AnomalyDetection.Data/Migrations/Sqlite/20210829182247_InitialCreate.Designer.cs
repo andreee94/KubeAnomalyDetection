@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnomalyDetection.Data.Migrations.Sqlite
 {
     [DbContext(typeof(ManagerContext))]
-    [Migration("20210826175039_InitialCreate")]
+    [Migration("20210829182247_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace AnomalyDetection.Data.Migrations.Sqlite
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.9");
 
-            modelBuilder.Entity("AnomalyDetection.Data.Model.Datasource", b =>
+            modelBuilder.Entity("AnomalyDetection.Data.Model.Db.DbDatasource", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,16 +52,19 @@ namespace AnomalyDetection.Data.Migrations.Sqlite
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Datasources");
                 });
 
-            modelBuilder.Entity("AnomalyDetection.Data.Model.Metric", b =>
+            modelBuilder.Entity("AnomalyDetection.Data.Model.Db.DbMetric", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("DatasourceId")
+                    b.Property<int>("DatasourceId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -82,10 +85,13 @@ namespace AnomalyDetection.Data.Migrations.Sqlite
 
                     b.HasIndex("DatasourceId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Metrics");
                 });
 
-            modelBuilder.Entity("AnomalyDetection.Data.Model.TrainingJob", b =>
+            modelBuilder.Entity("AnomalyDetection.Data.Model.Db.DbTrainingJob", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,22 +115,29 @@ namespace AnomalyDetection.Data.Migrations.Sqlite
                     b.ToTable("TrainingJobs");
                 });
 
-            modelBuilder.Entity("AnomalyDetection.Data.Model.Metric", b =>
+            modelBuilder.Entity("AnomalyDetection.Data.Model.Db.DbMetric", b =>
                 {
-                    b.HasOne("AnomalyDetection.Data.Model.Datasource", "Datasource")
-                        .WithMany()
-                        .HasForeignKey("DatasourceId");
+                    b.HasOne("AnomalyDetection.Data.Model.Db.DbDatasource", "Datasource")
+                        .WithMany("Metrics")
+                        .HasForeignKey("DatasourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Datasource");
                 });
 
-            modelBuilder.Entity("AnomalyDetection.Data.Model.TrainingJob", b =>
+            modelBuilder.Entity("AnomalyDetection.Data.Model.Db.DbTrainingJob", b =>
                 {
-                    b.HasOne("AnomalyDetection.Data.Model.Metric", "Metric")
+                    b.HasOne("AnomalyDetection.Data.Model.Db.DbMetric", "Metric")
                         .WithMany()
                         .HasForeignKey("MetricId");
 
                     b.Navigation("Metric");
+                });
+
+            modelBuilder.Entity("AnomalyDetection.Data.Model.Db.DbDatasource", b =>
+                {
+                    b.Navigation("Metrics");
                 });
 #pragma warning restore 612, 618
         }

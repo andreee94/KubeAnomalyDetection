@@ -1,18 +1,13 @@
 using System;
 using AnomalyDetection.Data.Repository;
-using Xunit;
 using Moq;
-using AnomalyDetection.Data.Model;
 using Microsoft.Extensions.Logging;
 using AnomalyDetection.Manager.Controllers;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using AnomalyDetection.Data.Model.Api;
 
 namespace AnomalyDetection.Manager.Unit.Tests.Controllers
 {
-    public abstract partial class CrudControllerTests<T> where T : CrudModel
+    public abstract partial class CrudControllerTests<T> where T : ApiCrudModel
     {
         protected readonly Random _random = new();
         protected readonly Mock<ICrudRepository<T>> _repositoryStub = new();
@@ -20,7 +15,7 @@ namespace AnomalyDetection.Manager.Unit.Tests.Controllers
 
         protected virtual T CreateRandomItem()
         {
-            return new CrudModel()
+            return new ApiCrudModel()
             {
                 Id = _random.Next(1000)
             } as T;

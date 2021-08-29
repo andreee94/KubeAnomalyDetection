@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using AnomalyDetection.Data.Model;
+
 using AnomalyDetection.Data.Context;
 
 namespace AnomalyDetection.Manager

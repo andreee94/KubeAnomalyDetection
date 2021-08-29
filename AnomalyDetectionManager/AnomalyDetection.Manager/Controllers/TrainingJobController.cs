@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using AnomalyDetection.Core.Service.Queue;
-using AnomalyDetection.Data.Model;
+using AnomalyDetection.Data.Model.Api;
 using AnomalyDetection.Data.Model.Queue;
 using AnomalyDetection.Data.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +10,7 @@ namespace AnomalyDetection.Manager.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TrainingJobController  : CrudController<TrainingJob>
+    public class TrainingJobController  : CrudController<ApiTrainingJob>
     {
         private readonly IBackgroundQueueService _queue;
 
@@ -23,7 +19,7 @@ namespace AnomalyDetection.Manager.Controllers
         {
             this._queue = queue;
         }
-        protected override async Task ProcessCrudEvent(CrudEvent<TrainingJob> crudEvent)
+        protected override async Task ProcessCrudEvent(CrudEvent<ApiTrainingJob> crudEvent)
         {
             await _queue.EnqueueAsync(crudEvent).ConfigureAwait(false);
         }

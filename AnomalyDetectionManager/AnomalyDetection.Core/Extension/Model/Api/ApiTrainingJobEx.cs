@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using AnomalyDetection.Data.Model;
+using AnomalyDetection.Data.Model.Api;
 using k8s.Models;
 
-namespace AnomalyDetection.Core.Extension.Model
+namespace AnomalyDetection.Core.Extension.Model.Api
 {
-    public static class TrainingJobEx
+    public static class ApiTrainingJobEx
     {
         public static void ThrowIfNull(this object obj)
         {
@@ -13,7 +13,7 @@ namespace AnomalyDetection.Core.Extension.Model
                 throw new NullReferenceException();
         }
 
-        public static string GetCronJobName(this TrainingJob trainingJob)
+        public static string GetCronJobName(this ApiTrainingJob trainingJob)
         {
             // in case of null metric or name it should throw exception.
             trainingJob.ThrowIfNull();
@@ -22,7 +22,7 @@ namespace AnomalyDetection.Core.Extension.Model
             return $"TrainingJob-{trainingJob.Metric.Name}".Replace("_", "-").ToLower();
         }
 
-        public static V1CronJob ToCronJob(this TrainingJob trainingJob, string image, string imagePullPolicy, string restartPolicy, IList<V1EnvVar> envList, IList<string> argList)
+        public static V1CronJob ToCronJob(this ApiTrainingJob trainingJob, string image, string imagePullPolicy, string restartPolicy, IList<V1EnvVar> envList, IList<string> argList)
         {
             envList.Add(new()
             {

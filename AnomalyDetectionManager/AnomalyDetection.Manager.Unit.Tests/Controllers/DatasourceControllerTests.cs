@@ -1,13 +1,14 @@
-using AnomalyDetection.Data.Model;
+
+using AnomalyDetection.Data.Model.Api;
 using Tynamix.ObjectFiller;
 
 namespace AnomalyDetection.Manager.Unit.Tests.Controllers
 {
-    public class DatasourceControllerTests : CrudControllerTests<Datasource>
+    public class DatasourceControllerTests : CrudControllerTests<ApiDatasource>
     {
-        protected override Datasource CreateRandomItem()
+        protected override ApiDatasource CreateRandomItem()
         {
-            return new Filler<Datasource>().Create();
+            return new Filler<ApiDatasource>().Create();
             
             // return new Datasource()
             // {

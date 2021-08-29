@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AnomalyDetection.Core.Service;
-using AnomalyDetection.Data.Model;
+using AnomalyDetection.Data.Model.Api;
 using AnomalyDetection.Data.Repository;
 using Microsoft.Extensions.Logging;
 
@@ -24,7 +23,7 @@ namespace AnomalyDetection.Core.Service
         {
             _logger.LogInformation("Running StartupService");
 
-            IList<TrainingJob> trainingJobs = await _trainingJobRepository.GetAllAsync().ConfigureAwait(false);
+            IList<ApiTrainingJob> trainingJobs = await _trainingJobRepository.GetAllAsync().ConfigureAwait(false);
 
             foreach (var trainingJob in trainingJobs)
             {

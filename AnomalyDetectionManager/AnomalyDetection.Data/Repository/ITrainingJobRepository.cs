@@ -1,10 +1,9 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AnomalyDetection.Data.Model;
+
+using AnomalyDetection.Data.Model.Api;
 
 namespace AnomalyDetection.Data.Repository
 {
-    public interface ITrainingJobRepository : ICrudRepository<TrainingJob>
+    public interface ITrainingJobRepository : ICrudRepository<ApiTrainingJob>
     {
     }
 }

@@ -2,6 +2,7 @@ using System.Linq;
 using AnomalyDetection.Data.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -10,8 +11,15 @@ namespace AnomalyDetection.Manager.Acceptance.Tests.Broker
 {
     public class InMemorySqliteWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {
+        private SqliteConnection Connection;
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            Connection = new SqliteConnection("DataSource=:memory:");
+            Connection.Open();
+
+            builder.UseEnvironment("Development");
+
             builder.ConfigureServices(services =>
             {
                 var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ManagerContext>));
@@ -20,22 +28,26 @@ namespace AnomalyDetection.Manager.Acceptance.Tests.Broker
 
                 services.AddDbContext<ManagerContext>(options =>
                 {
-                    // options.UseSqlite("DataSource=:memory:");
-                    options.UseInMemoryDatabase("InMemoryDbForTesting");
+                    options.EnableSensitiveDataLogging();
+                    options.UseSqlite(Connection);
+                    // options.UseSqlite("Filename=:memory:");
+                    // options.UseInMemoryDatabase("InMemoryDbForTesting");
                     _ = options;
                 });
 
-                var sp = services.BuildServiceProvider();
+                // services.AddAutoMapper(typeof(Startup));
 
-                using var scope = sp.CreateScope();
-                var scopedServices = scope.ServiceProvider;
-                var db = scopedServices.GetRequiredService<ManagerContext>();
-                var logger = scopedServices.GetRequiredService<ILogger<InMemorySqliteWebApplicationFactory<TStartup>>>();
+                // var sp = services.BuildServiceProvider();
+                // using var scope = sp.CreateScope();
+                // var scopedServices = scope.ServiceProvider;
+                // var db = scopedServices.GetRequiredService<ManagerContext>();
+                // var logger = scopedServices.GetRequiredService<ILogger<InMemorySqliteWebApplicationFactory<TStartup>>>();
 
-                db.Database.EnsureDeleted();
-                db.Database.EnsureCreated();
+                // db.Database.EnsureDeleted();
+                // db.Database.EnsureCreated();
+
                 // db.Database.Migrate();
-                
+
                 // var a = db.Database.GetMigrations();
                 // var b = db.Database.GetAppliedMigrations();
 
@@ -49,6 +61,12 @@ namespace AnomalyDetection.Manager.Acceptance.Tests.Broker
                 //         "database with test messages. Error: {Message}", ex.Message);
                 // }
             });
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            Connection.Close();
         }
     }
 }

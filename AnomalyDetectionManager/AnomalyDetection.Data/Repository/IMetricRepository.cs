@@ -1,10 +1,8 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AnomalyDetection.Data.Model;
+using AnomalyDetection.Data.Model.Api;
 
 namespace AnomalyDetection.Data.Repository
 {
-    public interface IMetricRepository : ICrudRepository<Metric>
+    public interface IMetricRepository : ICrudRepository<ApiMetric>
     {
     }
 }

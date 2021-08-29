@@ -1,13 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
-namespace AnomalyDetection.Data.Model
+namespace AnomalyDetection.Data.Model.Db
 {
-    public class Datasource : CrudModel
+    [Index(nameof(Name), IsUnique = true)]
+    public class DbDatasource : DbCrudModel
     {
         [Required]
         [MaxLength(64)]
@@ -30,18 +33,6 @@ namespace AnomalyDetection.Data.Model
         [Required]
         public bool IsAuthenticated { get; set; }
 
-        // public string Hash()
-        // {
-        //     StringBuilder sb = new();
-        //     sb.Append(DatasourceType);
-        //     sb.Append(Url);
-        //     sb.Append(Username);
-        //     sb.Append(Password);
-        //     sb.Append(IsAuthenticated);
-
-        //     MD5 md5 = new MD5CryptoServiceProvider();
-        //     byte[] hashBytes = md5.ComputeHash(Encoding.ASCII.GetBytes(sb.ToString()));
-        //     return BitConverter.ToString(hashBytes);
-        // }
+        public ICollection<DbMetric> Metrics { get; set; }
     }
 }

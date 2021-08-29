@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AnomalyDetection.Core.Extension.Kubernetes;
-using AnomalyDetection.Core.Extension.Model;
-using AnomalyDetection.Data.Model;
+using AnomalyDetection.Core.Extension.Model.Api;
+using AnomalyDetection.Data.Model.Api;
 using AnomalyDetection.Data.Model.Option;
 using k8s;
 using k8s.Models;
@@ -26,7 +24,7 @@ namespace AnomalyDetection.Core.Service
             _options = trainingJobOptions.Value;
         }
 
-        public async Task CreateCronJob(TrainingJob trainingJob)
+        public async Task CreateCronJob(ApiTrainingJob trainingJob)
         {
             await CreateNamespaceIfNotExistsAsync(_options.KubeNamespace).ConfigureAwait(false);
 
@@ -67,7 +65,7 @@ namespace AnomalyDetection.Core.Service
             }
         }
 
-        public async Task DeleteCronJob(TrainingJob item)
+        public async Task DeleteCronJob(ApiTrainingJob item)
         {
             var cronJobName = item.GetCronJobName();
             if (await ExistsCronJob(cronJobName).ConfigureAwait(false))

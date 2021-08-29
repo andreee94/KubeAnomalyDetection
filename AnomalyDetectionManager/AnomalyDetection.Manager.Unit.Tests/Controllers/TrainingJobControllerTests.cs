@@ -1,14 +1,14 @@
 using System;
-using AnomalyDetection.Data.Model;
+using AnomalyDetection.Data.Model.Api;
 using Tynamix.ObjectFiller;
 
 namespace AnomalyDetection.Manager.Unit.Tests.Controllers
 {
-    public class TrainingJobControllerTests : CrudControllerTests<TrainingJob>
+    public class TrainingJobControllerTests : CrudControllerTests<ApiTrainingJob>
     {
-        protected override TrainingJob CreateRandomItem()
+        protected override ApiTrainingJob CreateRandomItem()
         {
-            return new Filler<TrainingJob>().Create();
+            return new Filler<ApiTrainingJob>().Create();
 
             // Datasource datasource = new()
             // {

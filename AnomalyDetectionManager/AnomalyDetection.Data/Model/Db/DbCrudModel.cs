@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AnomalyDetection.Data.Model
+namespace AnomalyDetection.Data.Model.Db
 {
-    public class CrudModel
+    public class DbCrudModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

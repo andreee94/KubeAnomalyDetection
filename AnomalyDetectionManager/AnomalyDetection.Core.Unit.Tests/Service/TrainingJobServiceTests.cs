@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using AnomalyDetection.Core.Extension.Model;
+using AnomalyDetection.Core.Extension.Model.Api;
 using AnomalyDetection.Core.Service;
-using AnomalyDetection.Data.Model;
+
+using AnomalyDetection.Data.Model.Api;
 using AnomalyDetection.Data.Model.Option;
 using FluentAssertions;
 using k8s;
@@ -70,7 +71,7 @@ namespace AnomalyDetection.Core.Unit.Tests.Service
 
         private static V1CronJob CreareRandomCronJob()
         {
-            var trainingJob = new Filler<TrainingJob>().Create();
+            var trainingJob = new Filler<ApiTrainingJob>().Create();
 
             return trainingJob.ToCronJob("image", "Always", "Never", new List<V1EnvVar>(), new List<string>());
         }

@@ -1,15 +1,14 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AnomalyDetection.Data.Context;
-using AnomalyDetection.Data.Model;
+using AnomalyDetection.Data.Model.Api;
+using AnomalyDetection.Data.Model.Db;
+using AutoMapper;
 
 namespace AnomalyDetection.Data.Repository.Database
 {
-    public class DbTrainingJobRepository : DbCrudRepository<TrainingJob>, ITrainingJobRepository
+    public class DbTrainingJobRepository : DbCrudRepository<ApiTrainingJob, DbTrainingJob>, ITrainingJobRepository
     {
-        public DbTrainingJobRepository(ManagerContext context)
-            : base(context, context.TrainingJobs)
+        public DbTrainingJobRepository(IMapper mapper, ManagerContext context)
+            : base(mapper, context, context.TrainingJobs)
         {
         }
     }

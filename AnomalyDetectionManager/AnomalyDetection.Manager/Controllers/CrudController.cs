@@ -1,16 +1,15 @@
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using AnomalyDetection.Data.Model;
 using AnomalyDetection.Data.Repository;
 using System.Threading.Tasks;
-using System;
 using System.Linq;
 using AnomalyDetection.Data.Model.Queue;
+using AnomalyDetection.Data.Model.Api;
+using System;
 
 namespace AnomalyDetection.Manager.Controllers
 {
-    public class CrudController<T> : ControllerBase where T : CrudModel
+    public class CrudController<T> : ControllerBase where T : ApiCrudModel
     {
         protected readonly ILogger<CrudController<T>> _logger;
         protected readonly ICrudRepository<T> _repository;
@@ -101,6 +100,11 @@ namespace AnomalyDetection.Manager.Controllers
         protected virtual Task ProcessCrudEvent(CrudEvent<T> crudEvent)
         {
             return Task.CompletedTask;
+        }
+
+        public Task EditById<T>(int? id, T item) where T : ApiCrudModel
+        {
+            throw new NotImplementedException();
         }
     }
 }

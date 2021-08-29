@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AnomalyDetection.Data.Model;
+
 using AnomalyDetection.Data.Model.Option;
 using AnomalyDetection.Data.Repository;
 using Microsoft.Extensions.Logging;
@@ -29,12 +29,12 @@ namespace AnomalyDetection.Core.Service
                     await Task.FromCanceled(cancelToken).ConfigureAwait(false);
                     return;
                 }
-                IList<Metric> metricList = await _metricRepository.GetAllAsync().ConfigureAwait(false);
+                // IList<Metric> metricList = await _metricRepository.GetAllAsync().ConfigureAwait(false);
 
-                foreach (var metric in metricList)
-                {
+                // foreach (var metric in metricList)
+                // {
                     
-                }
+                // }
             }
         }
     }

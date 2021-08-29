@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AnomalyDetection.Core.Service;
-using AnomalyDetection.Data.Model;
+
 using AnomalyDetection.Data.Repository;
 using Microsoft.Extensions.Logging;
 
