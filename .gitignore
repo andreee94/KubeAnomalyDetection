@@ -454,4 +454,5 @@ AnomalyDetectionManager/AnomalyDetection.Manager/ManagerDB.db-wal
 AnomalyDetectionManager/AnomalyDetection.Manager/ManagerDB.db-shm
 **/htmlcov/
 **/.venv/
+**/venv/
 .coverage

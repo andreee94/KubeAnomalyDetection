@@ -17,3 +17,16 @@ or
 ```bash
 python -m coverage html
 ```
+
+## Make Commands:
+
+- `make` or `make list` to show the list of make commands;
+- `make run` to run the file `main.py`;
+- `make test-only` to run only the tests without coverage;
+- `make coverage` to open the coverage with firefox;
+- `make test` to run test and show coverage;
+- `make clean-python` to clean python files;
+- `make clean-coverage` to clean coverage files;
+- `make clean-venv` to clean the venv environment;
+- `make clean` to clean python and coverage;
+- `make clean-all` to clean everythin;
