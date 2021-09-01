@@ -1,0 +1,8 @@
+numpy
+pandas
+pystan
+prophet
+overrides
+parameterized
+requests
+coverage

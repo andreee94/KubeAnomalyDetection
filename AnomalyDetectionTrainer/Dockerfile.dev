@@ -1,0 +1,17 @@
+FROM python:alpine
+
+RUN apk --update add gcc build-base openblas-dev gfortran gfortran musl-dev
+# freetype-dev libpng-dev
+
+RUN pip install --upgrade setuptools
+RUN pip install numpy
+RUN pip install pandas
+# RUN pip install matplotlib
+RUN pip install pystan
+RUN pip install fbprophet
+
+# RUN mkdir /app
+WORKDIR /app
+COPY src/* ./
+
+ENTRYPOINT [ "python" "main.py" ]

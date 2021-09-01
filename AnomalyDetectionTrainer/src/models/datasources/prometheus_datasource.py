@@ -4,19 +4,20 @@ import requests
 import datetime
 import numpy as np
 import pandas as pd
-
+from overrides import overrides
 from models.datasources.datasource import Datasource
 
 
 
 class PrometheusDatasource(Datasource):
 
-    PROMETHUES_TYPE = "PROMETHEUS"
+    TYPE = "PROMETHEUS"
 
     def __init__(self, url: str, is_authenticated: bool = False, username: str = None, password: str = None):
-        super().__init__(url, PrometheusDatasource.PROMETHUES_TYPE,
+        super().__init__(url, PrometheusDatasource.TYPE,
                          is_authenticated, username, password)
 
+    @overrides
     def query_data(self, query: str, start_date: datetime, end_date: datetime):
         
         step = 60

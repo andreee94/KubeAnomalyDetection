@@ -2,16 +2,6 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import datetime
 import numpy
-# from dataclasses import dataclass
-
-# @dataclass
-# class Datasource:
-#     url: str
-#     datasource_type: str
-#     is_authenticated: bool = False
-#     username: str = None
-#     password: str = None
-
 
 class Datasource(ABC):
 
@@ -24,4 +14,6 @@ class Datasource(ABC):
 
     @abstractmethod
     def query_data(self, query: str, start_date: datetime, end_date: datetime):
-        pass
+        """ this abstract method should return the data with a query from the datasource. """
+
+    
