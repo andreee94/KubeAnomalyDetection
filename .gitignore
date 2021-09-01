@@ -452,3 +452,6 @@ AnomalyDetectionManager/.vscode/solution-explorer/
 AnomalyDetectionManager/AnomalyDetection.Manager/ManagerDB.db
 AnomalyDetectionManager/AnomalyDetection.Manager/ManagerDB.db-wal
 AnomalyDetectionManager/AnomalyDetection.Manager/ManagerDB.db-shm
+**/htmlcov/
+**/.venv/
+.coverage
