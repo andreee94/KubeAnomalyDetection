@@ -8,6 +8,7 @@ VENV := .venv
 INSTALL_STAMP := $(VENV)/.install.stamp
 INSTALL_STAMP_DEBUG := $(VENV)/.install.debug.stamp
 PYTHON := $(VENV)/bin/python
+COVERAGE_MARKDOWN_FILE := ./COVERAGE.md
 
 ##############################################################################
 
@@ -35,10 +36,22 @@ test-only: $(INSTALL_STAMP)
 		--omit *_unittest.py,*__init__.py \
 		--source=src \
 		-m unittest discover --verbose --start-directory ./src/  --pattern '*_unittest.py'
-	$(PYTHON) -m coverage html
 
 coverage:
+	$(PYTHON) -m coverage html
 	firefox htmlcov/index.html
+
+
+coverage-text:
+	$(PYTHON) -m coverage report
+
+
+coverage-json:
+	$(PYTHON) -m coverage json
+
+coverage-md:
+	$(PYTHON) -m coverage report | tr -s ' ' | sed 's/ /|/g' | tr -s '-' | sed 's/^-$//-|-|-|-/' | xargs -L 1 printf "|%s|\n" > $(COVERAGE_MARKDOWN_FILE)
+
 
 test: test-only coverage
 

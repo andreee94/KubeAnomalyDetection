@@ -6,3 +6,5 @@ overrides
 parameterized
 requests
 coverage
+sqlalchemy
+psycopg2

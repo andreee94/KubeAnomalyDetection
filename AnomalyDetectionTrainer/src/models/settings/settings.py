@@ -6,6 +6,7 @@ import prophet
 from models.settings.settings_datasource import SettingsDatasource
 from models.settings.settings_forecast import SettingsForecast
 from models.settings.settings_retraining import SettingsRetraining
+from models.settings.settings_storage import SettingsStorage
 from utils import utils
 
 
@@ -15,6 +16,7 @@ class Settings:
     debug: bool
 
     datasource: SettingsDatasource
+    storage: SettingsStorage
     retraining: SettingsRetraining
     forecast: SettingsForecast
 
@@ -22,9 +24,10 @@ class Settings:
     @staticmethod
     def load_from_env():
         query = utils.getenv_or_raise("QUERY")
-        debug = utils.getenv("QUERY", default=False)
+        debug = utils.getenv("DEBUG", default=False)
 
         datasource = SettingsDatasource.load_from_env()
+        storage = SettingsStorage.load_from_env()
         retraining = SettingsRetraining.load_from_env()
         forecast = SettingsForecast.load_from_env()
 
@@ -32,6 +35,7 @@ class Settings:
             query=query,
             debug=debug,
             datasource=datasource,
+            storage=storage,
             retraining=retraining,
             forecast=forecast
         )

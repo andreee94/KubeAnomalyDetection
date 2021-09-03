@@ -15,8 +15,7 @@ class TestSkipDecorators(unittest.TestCase):
 
         result = unittest_extension.skip_decorators.skipIfEnvIsSet(env_name, "reason")(func)
 
-        self.assertEqual(result, func)
-        self.assertEqual(result(2, 3), 5)
+        self.assertNotEqual(result, func)
 
 
     def test_skipIfEnvIsSet_when_env_is_not_set(self):
@@ -29,7 +28,8 @@ class TestSkipDecorators(unittest.TestCase):
 
         result = unittest_extension.skip_decorators.skipIfEnvIsSet(env_name, "reason")(func)
 
-        self.assertNotEqual(result, func)
+        self.assertEqual(result, func)
+        self.assertEqual(result(2, 3), 5)
 
 #########################################################################
 
@@ -42,7 +42,8 @@ class TestSkipDecorators(unittest.TestCase):
 
         result = unittest_extension.skip_decorators.skipIfEnvIsUnset(env_name, "reason")(func)
 
-        self.assertNotEqual(result, func)
+        self.assertEqual(result, func)
+        self.assertEqual(result(2, 3), 5)
 
 
     def test_skipIfEnvIsUnset_when_env_is_not_set(self):
@@ -55,8 +56,7 @@ class TestSkipDecorators(unittest.TestCase):
 
         result = unittest_extension.skip_decorators.skipIfEnvIsUnset(env_name, "reason")(func)
 
-        self.assertEqual(result, func)
-        self.assertEqual(result(2, 3), 5)
+        self.assertNotEqual(result, func)
 
 #########################################################################
 

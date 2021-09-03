@@ -14,7 +14,7 @@ from models.datasources.prometheus_datasource import PrometheusDatasource
 
 class TestPrometheusDatasource(unittest.TestCase):
 
-    @unittest_extension.skip_decorators.skipIfEnvIsSet("IS_PROMETHEUS_AVAILABLE", "prometheus is not available")
+    @unittest_extension.skip_decorators.skipIfEnvIsUnset("IS_PROMETHEUS_AVAILABLE", "prometheus is not available")
     def test_query_data_with_valid_data_should_succeed(self):
         datasource = PrometheusDatasource(
             url="http://192.168.1.102:9090",

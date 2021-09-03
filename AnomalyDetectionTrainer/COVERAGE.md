@@ -1,0 +1,17 @@
+|Name|Stmts|Miss|Cover|
+|-|-|-|-|
+|src/main.py|25|25|0%|
+|src/models/datasources/datasource.py|13|0|100%|
+|src/models/datasources/datasources.py|16|0|100%|
+|src/models/datasources/prometheus_datasource.py|23|0|100%|
+|src/models/settings/settings.py|23|0|100%|
+|src/models/settings/settings_datasource.py|19|0|100%|
+|src/models/settings/settings_forecast.py|18|0|100%|
+|src/models/settings/settings_retraining.py|11|0|100%|
+|src/models/storages/postgres_storage.py|19|0|100%|
+|src/models/storages/storage.py|10|0|100%|
+|src/ui/debug_ui.py|17|17|0%|
+|src/unittest_extension/skip_decorators.py|8|0|100%|
+|src/utils/utils.py|38|0|100%|
+|-|-|-|-|
+|TOTAL|240|42|82%|

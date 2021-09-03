@@ -2,6 +2,7 @@ import datetime
 import prophet
 from models.settings.settings import Settings
 from models.datasources.datasources import Datasources
+from models.storages.storages import Storages
 
 # env variables
 
@@ -49,6 +50,7 @@ def train():
         debugUI.setup()
 
     datasource = Datasources.get_datasource_implementation_from_settings(settings.datasource)
+    storage = Storages.get_storage_implementation_from_settings(settings.storage)
 
     # datasource = PrometheusDatasource(
     #     url="http://192.168.1.102:9090",
@@ -86,6 +88,11 @@ def train():
     )
 
     forecast = model.predict(future_time)
+
+    storage.save_data(forecast)
+
+
+    # forecast.to_pickle("./unittest/data/forecast.pkl")
 
     if settings.debug:
         debugUI.show_dataframe_as_plot(forecast)

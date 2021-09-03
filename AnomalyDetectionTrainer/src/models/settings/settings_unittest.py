@@ -18,6 +18,7 @@ class TestSettings(unittest.TestCase):
 
     def test_load_from_env_with_valid_values_should_succeed(self):  
         os.environ["QUERY"] = "example_query"
+        os.environ["DEBUG"] = "False"
 
         os.environ["DATASOURCE_URL"] = "https://example.url.com"
         os.environ["DATASOURCE_TYPE"] = "example_datasource_type"

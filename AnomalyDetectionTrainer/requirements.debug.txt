@@ -8,3 +8,5 @@ requests
 coverage
 streamlit
 plotly
+sqlalchemy
+psycopg2

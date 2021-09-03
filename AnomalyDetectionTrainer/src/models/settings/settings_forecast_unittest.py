@@ -18,6 +18,7 @@ class TestSettingsForecast(unittest.TestCase):
         self.assertEqual(settings.forecast_window, 21600)
         self.assertEqual(settings.forecast_step, 1800)
         self.assertEqual(settings.forecast_period, 12)
+        self.assertEqual(settings.forecast_step_literal, "1800S")
         
     
     def test_load_from_env_with_invalid_values_should_fail(self):  
