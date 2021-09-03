@@ -3,7 +3,8 @@ from unittest import result
 from models.datasources.datasource import Datasource
 from models.datasources.datasources import Datasources
 from models.datasources.prometheus_datasource import PrometheusDatasource
-from models.settings import Settings
+from models.settings.settings import Settings
+from models.settings.settings_datasource import SettingsDatasource
 from utils import utils
 import unittest
 import os 
@@ -46,8 +47,7 @@ class TestDatasources(unittest.TestCase):
 
     def test_get_datasource_implementation_from_settings_with_valid_type_should_work(self):
 
-        settings = Settings(
-            query = "query",
+        settings = SettingsDatasource(
             datasource_url = "https://test.url.com",
             datasource_is_authenticated = False,
             datasource_username = "username",
@@ -66,8 +66,7 @@ class TestDatasources(unittest.TestCase):
 
 
     def test_get_datasource_implementation_from_settings_with_invalid_type_should_return_none(self):
-        settings = Settings(
-            query = "query",
+        settings = SettingsDatasource(
             datasource_url = "https://test.url.com",
             datasource_is_authenticated = False,
             datasource_type = "RANDOM_TYPE_THAT_DOES_NOT_EXIST"

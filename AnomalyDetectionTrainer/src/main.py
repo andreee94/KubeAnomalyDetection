@@ -1,13 +1,6 @@
 import datetime
-import os 
-import sys
-import pandas
-from prophet import Prophet
 import prophet
-from models.settings import Settings
-from utils import utils
-
-from models.datasources.prometheus_datasource import PrometheusDatasource
+from models.settings.settings import Settings
 from models.datasources.datasources import Datasources
 
 # env variables
@@ -50,7 +43,12 @@ def train():
 
     settings = Settings.load_from_env()
 
-    datasource = Datasources.get_datasource_implementation_from_settings(settings)
+    if settings.debug:
+        from ui.debug_ui import DebugUI
+        debugUI = DebugUI()
+        debugUI.setup()
+
+    datasource = Datasources.get_datasource_implementation_from_settings(settings.datasource)
 
     # datasource = PrometheusDatasource(
     #     url="http://192.168.1.102:9090",
@@ -59,11 +57,17 @@ def train():
 
     # query = """rate(loki_distributor_lines_received_total[5m])""" #"up"
     settings.query = """sum(avg_over_time(kube_metrics_server_pods_cpu[120m])) / 1e6"""
-    start_date = datetime.datetime.utcnow() - datetime.timedelta(days=7)
+    start_date = datetime.datetime.utcnow() - datetime.timedelta(days=1)
     end_date = datetime.datetime.utcnow()
 
     df = datasource.query_data(settings.query, start_date, end_date)
     
+    print(df)
+
+    # if settings.debug:
+    #     debugUI.show_dataframe_as_plot(df)
+        # debugUI.show_dataframe_as_table(df)
+
     # df.ds = pd.to_datetime(df.ds)
 
     model = prophet.Prophet(
@@ -71,20 +75,23 @@ def train():
         weekly_seasonality=False, \
         yearly_seasonality=False
     )
-    model.add_seasonality(name='daily', period=1, fourier_order=30)
+    model.add_seasonality(name='daily', period=1, fourier_order=5)
 
     model.fit(df)
 
     future_time = model.make_future_dataframe(
-        periods=int(48),
-        freq="30MIN",
+        periods=int(settings.forecast.forecast_period),
+        freq=settings.forecast.forecast_step_literal, #"30MIN",
         include_history=True,
     )
 
     forecast = model.predict(future_time)
 
+    if settings.debug:
+        debugUI.show_dataframe_as_plot(forecast)
+        # debugUI.show_dataframe_as_table(forecast)
 
 
 
 if __name__ == "__main__":
-    pass
+    train()

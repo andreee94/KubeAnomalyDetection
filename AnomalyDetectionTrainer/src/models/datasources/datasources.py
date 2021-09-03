@@ -1,6 +1,7 @@
 from typing import List
 from models.datasources.prometheus_datasource import PrometheusDatasource
-from models.settings import Settings
+from models.settings.settings import Settings
+from models.settings.settings_datasource import SettingsDatasource
 
 class Datasources:
 
@@ -19,5 +20,5 @@ class Datasources:
         return datasource_class(url, is_authenticated=is_authenticated, username=username, password=password, **kwargs)
 
     @staticmethod
-    def get_datasource_implementation_from_settings(settings: Settings):
+    def get_datasource_implementation_from_settings(settings: SettingsDatasource):
         return Datasources.get_datasource_implementation(settings.datasource_url, settings.datasource_type, is_authenticated=settings.datasource_is_authenticated, username=settings.datasource_username, password=settings.datasource_password)

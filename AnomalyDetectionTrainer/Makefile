@@ -6,6 +6,7 @@ list:
 
 VENV := .venv
 INSTALL_STAMP := $(VENV)/.install.stamp
+INSTALL_STAMP_DEBUG := $(VENV)/.install.debug.stamp
 PYTHON := $(VENV)/bin/python
 
 ##############################################################################
@@ -17,10 +18,17 @@ $(INSTALL_STAMP): $(PYTHON) requirements.txt
 	$(PYTHON) -m pip install -r requirements.txt
 	touch $(INSTALL_STAMP)
 
+$(INSTALL_STAMP_DEBUG): $(PYTHON) requirements.debug.txt
+	$(PYTHON) -m pip install -r requirements.debug.txt
+	touch $(INSTALL_STAMP_DEBUG)
+
 ##############################################################################
 
 run: $(INSTALL_STAMP)
 	$(PYTHON) src/main.py
+
+debug: $(INSTALL_STAMP_DEBUG)
+	export DEBUG=true && $(PYTHON) -m streamlit run src/main.py
 
 test-only: $(INSTALL_STAMP)
 	$(PYTHON) -m coverage run \

@@ -1,10 +1,13 @@
 import datetime
+import json
+import os
 import unittest
 from unittest import result
 import prophet
 import matplotlib.pyplot as plt
 import pandas as pd
 import unittest_extension.skip_decorators
+from unittest.mock import MagicMock
 
 from models.datasources.prometheus_datasource import PrometheusDatasource
 
@@ -14,7 +17,7 @@ class TestPrometheusDatasource(unittest.TestCase):
     @unittest_extension.skip_decorators.skipIfEnvIsSet("IS_PROMETHEUS_AVAILABLE", "prometheus is not available")
     def test_query_data_with_valid_data_should_succeed(self):
         datasource = PrometheusDatasource(
-            url="http://192.168.1.102:9091",
+            url="http://192.168.1.102:9090",
             is_authenticated=False
         )
         query = "up"
@@ -30,7 +33,30 @@ class TestPrometheusDatasource(unittest.TestCase):
         self.assertLessEqual(result.shape[0], 60 + 1) # we are querying 1 hour so 60 + 1 samples at maximum
         self.assertEqual(result.ds.dtypes.name, 'datetime64[ns]')
         self.assertEqual(result.y.dtypes.name, 'float64')
-        # TODO TEST THE STEP
+
+
+    def test_query_data_with_mocked_data_should_succeed(self):
+        datasource = PrometheusDatasource(
+            url="http://192.168.1.102:9090",
+            is_authenticated=False
+        )
+
+        with open("./unittest/data/prometheus_datasource_response.json", 'r') as f:
+            datasource.get_prometheus_request = MagicMock(return_value=json.load(f))
+
+        query = "up"
+        start_date = datetime.datetime.utcnow() - datetime.timedelta(hours=1)
+        end_date = datetime.datetime.utcnow()
+
+        result = datasource.query_data(query, start_date, end_date)
+
+        self.assertIn("ds", result.columns)
+        self.assertIn("y", result.columns)
+        self.assertEqual(result.shape[1], 2)
+        self.assertGreater(result.shape[0], 0)
+        self.assertLessEqual(result.shape[0], 60 + 1) # we are querying 1 hour so 60 + 1 samples at maximum
+        self.assertEqual(result.ds.dtypes.name, 'datetime64[ns]')
+        self.assertEqual(result.y.dtypes.name, 'float64')
 
 
     def test_1(self):
