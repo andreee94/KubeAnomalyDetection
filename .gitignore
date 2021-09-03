@@ -456,3 +456,6 @@ AnomalyDetectionManager/AnomalyDetection.Manager/ManagerDB.db-shm
 **/.venv/
 **/venv/
 .coverage
+AnomalyDetectionTrainer/.env
+AnomalyDetectionTrainer/unittest/data/prometheus_datasource_response.json
+.gitignore
