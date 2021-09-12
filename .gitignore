@@ -458,4 +458,4 @@ AnomalyDetectionManager/AnomalyDetection.Manager/ManagerDB.db-shm
 .coverage
 AnomalyDetectionTrainer/.env
 AnomalyDetectionTrainer/unittest/data/prometheus_datasource_response.json
-.gitignore
+AnomalyDetectionTrainer/unittest/data/forecast.pkl
