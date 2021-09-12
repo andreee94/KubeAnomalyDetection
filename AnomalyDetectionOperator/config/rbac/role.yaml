@@ -1,0 +1,34 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - anomalydetection.andreee94.ml
+  resources:
+  - trainers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - anomalydetection.andreee94.ml
+  resources:
+  - trainers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - anomalydetection.andreee94.ml
+  resources:
+  - trainers/status
+  verbs:
+  - get
+  - patch
+  - update

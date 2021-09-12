@@ -1,0 +1,16 @@
+apiVersion: anomalydetection.andreee94.ml/v1alpha1
+kind: Datasource
+metadata:
+  name: datasource-sample
+spec:
+  datasourceType: Prometheus
+  url: http://prometheus-svc:9090
+  isAuthenticated: true
+  usernameSecretRef:
+    name: prometheus-anomaly-detection-user
+    key: username
+  passwordSecretRef:
+    name: prometheus-anomaly-detection-user
+    key: password
+
+  

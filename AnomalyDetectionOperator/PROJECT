@@ -1,0 +1,24 @@
+domain: andreee94.ml
+layout:
+- go.kubebuilder.io/v3
+projectName: anomalydetectionoperator
+repo: AnomalyDetectionOperator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: andreee94.ml
+  group: anomalydetection
+  kind: Trainer
+  path: AnomalyDetectionOperator/api/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: andreee94.ml
+  group: anomalydetection
+  kind: Datasource
+  path: AnomalyDetectionOperator/api/v1alpha1
+  version: v1alpha1
+version: "3"

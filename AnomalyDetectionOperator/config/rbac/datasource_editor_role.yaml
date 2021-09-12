@@ -1,0 +1,24 @@
+# permissions for end users to edit datasources.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: datasource-editor-role
+rules:
+- apiGroups:
+  - anomalydetection.andreee94.ml
+  resources:
+  - datasources
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - anomalydetection.andreee94.ml
+  resources:
+  - datasources/status
+  verbs:
+  - get

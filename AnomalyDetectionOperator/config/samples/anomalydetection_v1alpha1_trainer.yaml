@@ -1,0 +1,10 @@
+apiVersion: anomalydetection.andreee94.ml/v1alpha1
+kind: Trainer
+metadata:
+  namespace: anomaly-detection
+  name: trainer-sample
+spec:
+  datasource:
+    name: datasource-sample
+  query: up
+  schedule: "* * * * *"
