@@ -1,0 +1,24 @@
+# permissions for end users to edit anomalydetectionconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: anomalydetectionconfig-editor-role
+rules:
+- apiGroups:
+  - config.andreee94.ml
+  resources:
+  - anomalydetectionconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - config.andreee94.ml
+  resources:
+  - anomalydetectionconfigs/status
+  verbs:
+  - get

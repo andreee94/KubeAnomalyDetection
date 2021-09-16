@@ -1,6 +1,7 @@
 domain: andreee94.ml
 layout:
 - go.kubebuilder.io/v3
+multigroup: true
 projectName: anomalydetectionoperator
 repo: AnomalyDetectionOperator
 resources:
@@ -11,7 +12,7 @@ resources:
   domain: andreee94.ml
   group: anomalydetection
   kind: Trainer
-  path: AnomalyDetectionOperator/api/v1alpha1
+  path: AnomalyDetectionOperator/apis/anomalydetection/v1alpha1
   version: v1alpha1
 - api:
     crdVersion: v1
@@ -19,6 +20,14 @@ resources:
   domain: andreee94.ml
   group: anomalydetection
   kind: Datasource
-  path: AnomalyDetectionOperator/api/v1alpha1
+  path: AnomalyDetectionOperator/apis/anomalydetection/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: andreee94.ml
+  group: config
+  kind: AnomalyDetectionConfig
+  path: AnomalyDetectionOperator/apis/config/v2
+  version: v2
 version: "3"

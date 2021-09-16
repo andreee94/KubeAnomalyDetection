@@ -17,7 +17,10 @@ limitations under the License.
 package v1alpha1
 
 import (
-	v1 "k8s.io/api/core/v1"
+	"fmt"
+	"strings"
+
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -28,10 +31,14 @@ type TrainerSpec struct {
 	Query string `json:"query"`
 
 	// The name of the AnomalyDetectionDatasource resource.
-	Datasource v1.LocalObjectReference `json:"datasource"`
+	Datasource corev1.LocalObjectReference `json:"datasource"`
 
 	// The schedule in Cron format, see https://en.wikipedia.org/wiki/Cron.
 	Schedule string `json:"schedule"`
+
+	// Override default options for the AnomalyDetectionTrainer container.
+	// +optional
+	Container corev1.Container `json:"container,omitempty"`
 }
 
 // TrainerStatus defines the observed state of Trainer
@@ -77,6 +84,15 @@ type Trainer struct {
 	Status TrainerStatus `json:"status,omitempty"`
 }
 
+func (t *Trainer) ToRow() string {
+	return fmt.Sprintf("%s(%s): Status: %s(%s), Query: %s",
+		t.Name,
+		t.Spec.Datasource.Name,
+		t.Status.Conditions,
+		t.Spec.Schedule,
+		t.Spec.Query)
+}
+
 //+kubebuilder:object:root=true
 
 // TrainerList contains a list of Trainer
@@ -84,6 +100,14 @@ type TrainerList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []Trainer `json:"items"`
+}
+
+func (l *TrainerList) ToRows() string {
+	builder := strings.Builder{}
+	for _, t := range l.Items {
+		builder.WriteString(t.ToRow())
+	}
+	return builder.String()
 }
 
 func init() {

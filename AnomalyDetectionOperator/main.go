@@ -22,6 +22,7 @@ import (
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
+	corev1 "k8s.io/api/core/v1"
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -31,8 +32,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	anomalydetectionv1alpha1 "AnomalyDetectionOperator/api/v1alpha1"
-	"AnomalyDetectionOperator/controllers"
+	anomalydetectionv1alpha1 "AnomalyDetectionOperator/apis/anomalydetection/v1alpha1"
+	configv2 "AnomalyDetectionOperator/apis/config/v2"
+	controllers "AnomalyDetectionOperator/controllers/anomalydetection"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -45,6 +47,7 @@ func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
 	utilruntime.Must(anomalydetectionv1alpha1.AddToScheme(scheme))
+	utilruntime.Must(configv2.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -57,6 +60,13 @@ func main() {
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
+
+	var configFile string
+	flag.StringVar(&configFile, "config", "",
+		"The controller will load its initial configuration from this file. "+
+			"Omit this flag to use the default configuration values. "+
+			"Command-line flags override configuration from this file.")
+
 	opts := zap.Options{
 		Development: true,
 	}
@@ -65,14 +75,34 @@ func main() {
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
-	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		Scheme:                 scheme,
-		MetricsBindAddress:     metricsAddr,
-		Port:                   9443,
-		HealthProbeBindAddress: probeAddr,
-		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "7a63eed5.andreee94.ml",
-	})
+	var err error
+	ctrlConfig := configv2.AnomalyDetectionConfig{}
+	options := ctrl.Options{Scheme: scheme}
+	if configFile != "" {
+		options, err = options.AndFrom(ctrl.ConfigFile().AtPath(configFile).OfKind(&ctrlConfig))
+		if err != nil {
+			setupLog.Error(err, "unable to load the config file")
+			os.Exit(1)
+		}
+	} else { // Default values or from args
+		options = ctrl.Options{
+			Scheme:                 scheme,
+			MetricsBindAddress:     metricsAddr,
+			Port:                   9443,
+			HealthProbeBindAddress: probeAddr,
+			LeaderElection:         enableLeaderElection,
+			LeaderElectionID:       "7a63eed5.andreee94.ml",
+		}
+		ctrlConfig.DefaultContainer = corev1.Container{
+			Name:            "training-job-container",
+			Image:           "alpine",
+			ImagePullPolicy: corev1.PullIfNotPresent,
+			Command:         []string{"sh", "-c"},
+			Args:            []string{"echo -e 'Please configure a proper AnomalyDetectionTrainer image. \nExiting..'"},
+		}
+	}
+
+	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), options)
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
@@ -81,6 +111,7 @@ func main() {
 	if err = (&controllers.TrainerReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
+		Config: &ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Trainer")
 		os.Exit(1)

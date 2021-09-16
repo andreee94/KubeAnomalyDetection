@@ -17,6 +17,9 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"fmt"
+	"strings"
+
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -67,6 +70,14 @@ type Datasource struct {
 	Status DatasourceStatus `json:"status,omitempty"`
 }
 
+func (d *Datasource) ToRow() string {
+	return fmt.Sprintf("%s(%s): %s, Authenticated: %t",
+		d.Name,
+		d.Spec.DatasourceType,
+		d.Spec.Url,
+		d.Spec.IsAuthenticated)
+}
+
 //+kubebuilder:object:root=true
 
 // DatasourceList contains a list of Datasource
@@ -74,6 +85,14 @@ type DatasourceList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []Datasource `json:"items"`
+}
+
+func (l *DatasourceList) ToRows() string {
+	builder := strings.Builder{}
+	for _, d := range l.Items {
+		builder.WriteString(d.ToRow())
+	}
+	return builder.String()
 }
 
 func init() {

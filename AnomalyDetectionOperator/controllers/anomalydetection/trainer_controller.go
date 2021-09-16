@@ -18,13 +18,11 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/go-logr/logr"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
-
-	// core "k8s.io/api/core/v1"
-
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -36,7 +34,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	anomalydetectionv1alpha1 "AnomalyDetectionOperator/api/v1alpha1"
+	anomalydetectionv1alpha1 "AnomalyDetectionOperator/apis/anomalydetection/v1alpha1"
+	v2 "AnomalyDetectionOperator/apis/config/v2"
+	helper "AnomalyDetectionOperator/helper"
 )
 
 func ignoreNotFound(err error) error {
@@ -51,6 +51,7 @@ type TrainerReconciler struct {
 	client.Client
 	Log    logr.Logger
 	Scheme *runtime.Scheme
+	Config *v2.AnomalyDetectionConfig
 }
 
 //+kubebuilder:rbac:groups=anomalydetection.andreee94.ml,resources=trainers,verbs=get;list;watch;create;update;patch;delete
@@ -156,10 +157,40 @@ func (r *TrainerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		}
 
 		// Configure cronjob container settings
-		container.Image = "alpine"
-		container.ImagePullPolicy = corev1.PullIfNotPresent
-		container.Command = []string{"sh", "-c"}
-		container.Args = []string{"sleep 10 && echo ${Query}"}
+
+		err = helper.MergeContainersWithPriority(container, r.Config.DefaultContainer, app.Spec.Container)
+
+		// logger.Info("container")
+		// logInfoYaml(logger, &container)
+
+		// logger.Info("r.Config.DefaultContainer")
+		// logInfoYaml(logger, &r.Config.DefaultContainer)
+
+		// logger.Info("app.Spec.Container")
+		// logInfoYaml(logger, &app.Spec.Container)
+
+		// err = mergo.Merge(&container, r.Config.DefaultContainer)
+
+		// logger.Info("Merged with default Container")
+		// logInfoYaml(&logger, container)
+
+		// err = mergo.Merge(&container, app.Spec.Container, mergo.WithOverride)
+
+		// logger.Info("Merged with Trainer Container")
+		// logInfoYaml(&logger, container)
+
+		// container = &r.Config.DefaultContainer
+
+		// container.Image = r.Config.DefaultContainer.Image
+		// container.ImagePullPolicy = r.Config.DefaultContainer.ImagePullPolicy
+		// container.Command = r.Config.DefaultContainer.Command
+		// container.Args = r.Config.DefaultContainer.Args
+		// container.Env = r.Config.DefaultContainer.Env
+		// container.EnvFrom = r.Config.DefaultContainer.EnvFrom
+		// container.Image = "alpine"
+		// container.ImagePullPolicy = corev1.PullIfNotPresent
+		// container.Command = []string{"sh", "-c"}
+		// container.Args = []string{"sleep 10 && echo ${Query}"}
 		setEnv(container, "Query", app.Spec.Query)
 		setEnv(container, "DatasourceUrl", datasource.Spec.Url)
 
@@ -207,6 +238,17 @@ func (r *TrainerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	return ctrl.Result{}, nil
 }
 
+func logInfoYaml(logger logr.Logger, obj interface{}) error {
+	// d := yaml.NewEncoder(file)
+	// d.SetIndent(4) // tried changing the indent but it does not change the root
+	// defer d.Close()
+	d, err := json.MarshalIndent(&obj, "", "  ")
+	if err == nil {
+		logger.Info(string(d))
+	}
+	return err
+}
+
 func getContainerFromName(cronJob batchv1.CronJob, containerName string) *corev1.Container {
 	var container *corev1.Container
 	// find the right container
@@ -220,7 +262,7 @@ func getContainerFromName(cronJob batchv1.CronJob, containerName string) *corev1
 	return nil
 }
 
-func setEnv(cont *corev1.Container, key, val string) {
+func setEnv(cont *corev1.Container, key string, val string) {
 	var envVar *corev1.EnvVar
 	for i, iterVar := range cont.Env {
 		if iterVar.Name == key {

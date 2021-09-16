@@ -1,0 +1,20 @@
+# permissions for end users to view anomalydetectionconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: anomalydetectionconfig-viewer-role
+rules:
+- apiGroups:
+  - config.andreee94.ml
+  resources:
+  - anomalydetectionconfigs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - config.andreee94.ml
+  resources:
+  - anomalydetectionconfigs/status
+  verbs:
+  - get

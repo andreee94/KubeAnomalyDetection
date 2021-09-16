@@ -7,6 +7,7 @@ spec:
   datasourceType: Prometheus
   url: http://prometheus-svc:9090
   isAuthenticated: false
+  
   # isAuthenticated: true
   # usernameSecretRef:
   #   name: prometheus-anomaly-detection-user

@@ -1,0 +1,7 @@
+apiVersion: config.andreee94.ml/v2
+kind: AnomalyDetectionConfig
+metadata:
+  name: anomalydetectionconfig-sample
+spec:
+  # Add fields here
+  foo: bar

@@ -1,11 +1,25 @@
-apiVersion: controller-runtime.sigs.k8s.io/v1alpha1
-kind: ControllerManagerConfig
+apiVersion: config.andreee94.ml/v2
+kind: AnomalyDetectionConfig
 health:
   healthProbeBindAddress: :8081
 metrics:
-  bindAddress: 127.0.0.1:8080
+  bindAddress: :8080
 webhook:
   port: 9443
 leaderElection:
-  leaderElect: true
+  leaderElect: false
   resourceName: 7a63eed5.andreee94.ml
+defaultContainer:
+  name: training-job-container
+  image: alpine
+  restartPolicy: Never
+  command:
+    - sh
+    - -c
+  args:
+    - 'sleep 10 && echo "Query: ${Query}. ENV_FROM_CONFIG: ${ENV_FROM_CONFIG}"'
+  env:
+    - name: ENV_FROM_CONFIG
+      value: "from_config"
+
+  
